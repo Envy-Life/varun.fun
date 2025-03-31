@@ -1,11 +1,11 @@
 import Link from "next/link"
 
 const links = [
-  { title: "email", href: "mailto:hey@nexxel.dev" },
-  { title: "x.com", href: "https://x.com/nexxeln" },
-  { title: "github", href: "https://github.com/nexxeln" },
-  { title: "linkedin", href: "https://www.linkedin.com/in/shoubhit-dash" },
-  { title: "book a call", href: "https://cal.com/nexxel" },
+  { title: "email", href: "mailto:varun.nyl@gmail.com" },
+  { title: "x.com", href: "https://x.com/0x3nvy" },
+  { title: "github", href: "https://github.com/Envy-Life" },
+  { title: "linkedin", href: "https://www.linkedin.com/in/0x3nvy/" },
+  { title: "book a call", href: "https://cal.com/0x3nvy" },
 ]
 
 export function LinksSection() {
@@ -25,6 +25,9 @@ export function LinksSection() {
           </Link>
         ))}
       </div>
+      <p className="text-xs text-gray-500 mt-8 italic">
+        portfolio inspired by <a href="https://varun.fun" className="hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">varun.fun</a>
+      </p>
     </section>
   )
 }

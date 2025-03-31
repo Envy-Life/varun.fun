@@ -6,24 +6,23 @@ export function Header() {
     <header className="mb-16 space-y-4">
       <h1 className="text-4xl font-bold mb-4 animate-fade-in text-white">
         <span className="inline-block">
-          <ScrambleText text="shoubhit dash" />
+          <ScrambleText text="Varun L" />
         </span>
       </h1>
       <div className="flex flex-col gap-2 text-gray-400">
         <div className="flex items-center gap-2">
           <MapPin className="w-4 h-4" />
-          chennai, india
+          Mumbai/Bengaluru, india
         </div>
         <div className="flex items-center gap-2">
           <Building2 className="w-4 h-4" />
-          co-founder and cto @ leapflow
+          Senior Infrastructure and Protocol Engineer at <a href="https://spicenet.io" className="hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">Spicenet</a>
         </div>
       </div>
       <p className="leading-relaxed animate-fade-in-up">
-        i&apos;m a 19 y/o cs undergrad student. i love building things and
-        solving problems. i enjoy language design, theoretical computer science
-        and i live on the terminal. if i&apos;m not coding, i&apos;m probably
-        doing cardistry, watching movies or obsessing over mechanical keyboards.
+        21 y/o cs undergrad. I love building random things that serve the most niche usecases and
+        solving problems. I enjoy competitive coding, logic puzzles and cybersecurity. if i&apos;m not coding, i&apos;m probably
+        working on building a NAS or a PC, watching movies or playing poker.
       </p>
     </header>
   )

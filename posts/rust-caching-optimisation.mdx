@@ -1,0 +1,186 @@
+---
+title: "Optimising Rust caching with advanced docker mechanics"
+date: "2024-11-18"
+author: "Varun L"
+---
+
+## Introduction
+
+Rust's build times are a persistent challenge for developers, particularly in resource-intensive ecosystems like Solana. Despite Rust's reputation for producing high-performance, safe, and reliable code, the cost is often paid upfront during the build process. Projects routinely compile hundreds of crates—external libraries or modules—resulting in significant delays. For Solana developers, this becomes even more pronounced as every project starts with a heavy base of dependencies, with most builds compiling over 500 crates. This overhead can result in build times ranging from 10 to 15 minutes for smaller projects, while larger ones may stretch to an hour or more. The strain on computational resources during these builds often exceeds the runtime demands of the compiled application itself, making it a critical bottleneck.
+
+This problem compounds when working with large monolithic repositories, where the need for comprehensive testing adds further delays. Running tests on a decently sized codebase may take well over an hour, significantly hindering developer productivity and iteration speed. Frequent builds and test runs, especially in collaborative teams, can disrupt workflows. As Rust continues to grow in popularity for system-level and blockchain development, understanding and mitigating these challenges is crucial. This blog offers practical strategies to optimize workflows without sacrificing the language's inherent strengths.
+
+
+## The Idea
+
+The core idea of this blog is to leverage Docker images to maintain a running cache of compiled code, significantly reducing the time and resources needed for builds and tests. Think of it as freezing a machine at a specific point—where everything is already compiled and ready—then unfreezing it whenever you need to run tests, builds, or deployments. Instead of starting from scratch each time, you work from this pre-prepared state, saving valuable time. With every new change or run, the Docker image is updated to keep it current, ensuring it's always ready to be used as a starting point for future tasks. This approach streamlines the development workflow, especially in resource-intensive environments like Rust and Solana projects.
+
+
+## The challenges
+
+While implementing this solution, a few significant challenges had to be addressed. One major hurdle was efficiently updating private repository code within the Docker container. Ensuring that the latest code changes are reflected without unnecessary overhead required careful integration and automation. Another critical concern was securing the Docker cache images, as they contain sensitive build artifacts and dependencies that, if exposed, could pose a security risk. Balancing accessibility for legitimate developers while safeguarding these images from unauthorized access demanded meticulous planning and robust security measures. Overcoming these challenges was essential to create a streamlined, secure, and practical workflow that developers can rely on.
+
+
+## Creating the initial docker image
+
+To initialize the Docker image for your project, start with the official Rust Docker image as it is widely used as the base for most Rust-based builds. First, ensure you have a secure container registry set up. Services like Docker Hub's private repositories work well for this purpose, providing both accessibility and security. Once the container registry is ready, you'll pull the official Rust image locally, tag it appropriately, and push it to your private repository under a specific name. This ensures that your base image is consistent and ready to be used as a foundation for caching builds.
+
+Here's an example of how to achieve this from your local machine:
+
+```bash
+# Pull the official Rust Docker image
+docker pull rust:latest
+
+# Tag the image for your private repository
+docker tag rust:latest <your-registry-url>/snapshot:latest
+
+# Push the image to the private container registry
+docker push <your-registry-url>/snapshot:latest
+
+```
+
+If you want to match Docker images to specific project versions based on the `Cargo.lock` file, consider adding a hash to the image tag. This ensures the correct image is fetched for each version. For example, you can calculate a hash of the `Cargo.lock` file and use it in the tag:
+
+```bash
+# Generate a hash for the Cargo.lock file
+HASH=$(sha256sum Cargo.lock | cut -d ' ' -f 1)
+
+# Tag the image with the hash
+docker tag rust:latest <your-registry-url>/snapshot:$HASH
+
+# Push the hashed image to the registry
+docker push <your-registry-url>/snapshot:$HASH
+
+```
+
+This approach helps maintain compatibility between the Docker image and the exact dependencies specified in the `Cargo.lock` file, ensuring consistent builds and eliminating issues caused by mismatched dependencies.
+
+Additionally, this is an excellent opportunity to pre-install any common packages or crates your project requires. By doing so, you minimize repetitive installations during subsequent build steps. Update the Dockerfile or execute the necessary commands directly in the container before pushing the customized image. For example:
+
+```docker
+# Extend the official Rust image
+FROM rust:latest
+
+# Install additional tools and dependencies
+RUN apt-get update && apt-get install -y cmake libssl-dev
+
+# Save the state to your registry
+```
+
+Once prepared, tag and push this customized image to your registry. This pre-built image forms the foundation of your workflow, streamlining builds and ensuring consistency across different development environments.
+
+## The Dockerfile
+
+### Base Image
+
+The base layer of the optimized Dockerfile should be derived from the latest snapshot image stored in your container registry. This ensures that the build starts from a pre-configured state, minimizing redundant setup steps and leveraging cached dependencies to speed up the process. By using the snapshot image as the foundation, you benefit from a ready-to-use environment tailored to your project's specific requirements, including any pre-installed packages or libraries. 
+
+```docker
+# Use the latest snapshot image from your private registry as the base
+FROM <your-registry-url>/snapshot:latest
+```
+
+### Git Setup
+
+To address the challenges of managing Git repositories within Docker images, we take a different approach: instead of copying files from the local system into the container at every build, we maintain the entire repository within the Docker image itself. This strategy ensures a clean and consistent state across builds, avoiding the messy layering issues caused by Docker's `COPY` command, which simply appends new files without properly replacing or cleaning up subfolders. By keeping the repository directly in the image, we also enable better caching, as Docker will only rebuild layers when the underlying Git repository changes.
+
+Here's how you can set this up in your Dockerfile:
+
+```docker
+# Use the latest snapshot image as the base
+FROM <your-registry-url>/snapshot:latest
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# This will be supplied by github actions
+ARG gh_link
+ARG gh_branch=main
+
+# Clone the repository directly into the container if it does not exist
+# else pull the latest commits
+RUN if ls .git; then git pull $gh_link; else git clone $gh_link .; fi
+
+# switch to the branch that needs to be used
+RUN git checkout $gh_branch
+```
+
+Maintaining the repository within the image makes it easier to version images for specific commits or branches, enabling seamless rollbacks or environment replication. By integrating Git directly into the Docker workflow, you ensure a clean, secure, and efficient setup for handling builds and deployments.
+
+### Building
+
+Start by running `cargo build` with the required features during the Docker build stage, ensuring that dependencies are cached and build artifacts are prepared in advance. This significantly speeds up the build process for subsequent runs, as Docker will reuse the cached layers for unchanged dependencies. Finally, use the `CMD` instruction to make `cargo test` the default command, allowing the container to automatically run your test suite when it starts. Here's how the setup might look:
+
+```docker
+# Pre-build the project with required features
+RUN cargo build --release --features "feature1 feature2"
+
+# Set cargo test as the default entrypoint
+CMD ["cargo", "test"]
+```
+
+
+## Github actions workflow
+
+To enable GitHub authorization for Docker builds within a GitHub Actions workflow, you can create a preauthorized GitHub link using a personal access token (PAT). This token should have fine-grained access with only the necessary permissions, such as read access to the required repositories. By restricting the scope of the token, you ensure that the setup adheres to security best practices, limiting exposure in case the token is accidentally compromised. Once generated, the token can be securely stored as a secret in your GitHub repository settings (e.g., `GH_ACCESS_TOKEN`). During the workflow, this token is embedded in a GitHub link (`https://<token>@github.com/<repo>`) and passed as a build argument to the Docker build process.
+
+Here's an example of how this setup looks in the `workflow.yaml` file:
+
+```yaml
+name: Cargo Testing
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Authenticate with GitHub
+        env:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: |
+          echo "https://${GH_ACCESS_TOKEN}@github.com" > gh_link.txt
+
+      - name: Build Docker Image
+        run: |
+          docker build \
+            --build-arg gh_link=$(cat gh_link.txt) \
+            --build-arg gh_branch=main
+            -t snapshot:latest \
+            .
+      - name: Run Docker image
+        run: |
+          docker run snapshot:latest
+```
+
+This setup ensures secure and efficient GitHub authorization during Docker builds. The token is securely passed through secrets, limiting access to authorized users and reducing the risk of accidental leaks.
+
+## Post test caching
+
+After building the Docker image in your GitHub Actions workflow, you can either upload the image as part of the same job or create a separate job that depends on the successful completion of the build job. Including the upload step in the same job keeps the workflow simple and minimizes context-switching between jobs. However, using a separate job ensures better modularity and allows for independent scaling, retries, and optimizations for specific steps. For instance, a dependent `upload` job can focus solely on pushing the image to a container registry, leveraging the `needs` keyword to ensure it runs only if the `build` job succeeds. Here's how it can be implemented:
+
+```yaml
+      - name: Push Docker Image
+        run: |
+          docker tag snapshot:latest <your-registry-url>/snapshot:latest
+          docker push <your-registry-url>/snapshot:latest
+```
+
+
+## Conclusion
+
+By leveraging Docker to streamline Rust builds and tests, this approach addresses key inefficiencies in traditional workflows. Maintaining a running snapshot of compiled caches drastically reduces build times, while integrating Git repositories directly into the image ensures clean, consistent environments. With optimized Dockerfiles and secure integration with GitHub, developers can achieve faster iterations, enhanced reproducibility, and more efficient use of resources. This solution not only simplifies deployments but also empowers teams to focus on development rather than battling long build times or configuration issues, making it a significant improvement over conventional methods.

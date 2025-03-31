@@ -47,11 +47,11 @@ export default async function BlogPage() {
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Writings on programming, computer science, and more.",
+  description: "Writings on programming and more.",
   openGraph: {
     images: [
       {
-        url: "https://www.nexxel.dev/og/home?title=blog",
+        url: "https://www.varun.fun/og/home?title=blog",
       },
     ],
   },

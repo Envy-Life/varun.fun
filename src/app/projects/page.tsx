@@ -4,90 +4,40 @@ import { Metadata } from "next"
 
 const projects = [
   {
-    title: "create-t3-app",
+    title: "Solana Indexer",
     description:
-      "cli tool to bootstrap full-stack type-safe next.js applications",
+      "A highly efficient and scalable self-hostable and programmable indexer for Solana, Powered by Superteam",
     role: "creator and maintainer",
-    period: "jun 2022 - present",
-    achievements: [
-      "grew project to 24k+ github stars",
-      "wrote education blog posts with over 100k views",
-      "maintained comprehensive, up-to-date documentation",
-    ],
     technologies: [
       "typescript",
-      "next.js",
-      "trpc",
-      "prisma",
-      "tailwind css",
-      "auth.js",
+      "rust",
+      "solana",
+      "mongoDB",
+      "graphql"
     ],
-    href: "https://create.t3.gg",
+    href: "https://github.com/Envy-Life/Solana-Indexer",
   },
   {
-    title: "mini-git",
-    description: "a simplified implementation of git built from scratch",
+    title: "Scalping Bot",
+    description: "A scalping bot for hyperliquid built using indicators from ta-lib",
     role: "creator",
-    period: "jul 2024",
-    achievements: [
-      "successfully implemented core git commands",
-      "implemented efficient blob storage and compression",
-      "learned about git's internal object model and data structures like merkle trees",
-    ],
-    technologies: ["go", "sha-1"],
-    href: "https://github.com/nexxeln/mini-git",
+    technologies: ["python", "hyperliquid", "ta-lib", "pandas"],
+    href: "https://github.com/Envy-Life",
   },
   {
-    title: "license-generator",
-    description: "cli tool to create licenses for your projects",
+    title: "IOS wallet connect",
+    description: "Built a flutter package to support and simplify deeplinks for solana mobile wallets",
     role: "creator and maintainer",
-    period: "mar 2022 - present",
-    achievements: [
-      "grew project to over 3.2k downloads",
-      "built a robust cli interface with fuzzy search",
-      "added support for all github licenses with auto-filling",
-    ],
-    technologies: ["rust", "github api"],
-    href: "https://github.com/nexxeln/license-generator",
+    technologies: ["flutter", "rust", "deeplinks", "solana"],
+    href: "https://github.com/Envy-Life/IOS_Wallet_Connect",
   },
   {
-    title: "spotify-voice-control",
-    description: "voice control for spotify through the terminal",
+    title: "Baos world",
+    description: "Lead the development for the first meme defi platform on BSC",
     role: "creator",
-    period: "feb 2022",
-    achievements: [
-      "integrated spotify web api for seamless, real-time music control",
-      "built voice command system for comprehensive music control including playback, search, and playlist management",
-    ],
-    technologies: ["python", "spotify api"],
-    href: "https://github.com/nexxeln/spotify-voice-control",
-  },
-  {
-    title: "text2regex",
-    description:
-      "convert natural language text into validated regular expressions",
-    role: "creator",
-    period: "jul 2024",
-    achievements: [
-      "implemented a self-correcting llm-powered regex generator",
-      "built a easy-to-use cli to generate regex patterns",
-    ],
-    technologies: ["typescript", "openai"],
-    href: "https://github.com/nexxeln/text2regex",
-  },
-  {
-    title: "fp_",
-    description: "a functional programming library for typescript",
-    role: "creator",
-    period: "feb 2023",
-    achievements: [
-      "implemented a comprehensive set of functional programming constructs",
-      "wrote documentation and examples to help developers understand and use the library",
-      "published to deno package registry",
-    ],
-    technologies: ["typescript"],
-    href: "https://github.com/nexxeln/fp",
-  },
+    technologies: ["node.js", "solidity", "postgresql", "typescript", "substreams"],
+    href: "https://github.com/Envy-Life",
+  }
 ]
 
 export default function ProjectsPage() {
@@ -119,7 +69,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: "https://www.nexxel.dev/og/home?title=projects",
+        url: "https://www.varun.fun/og/home?title=projects",
       },
     ],
   },

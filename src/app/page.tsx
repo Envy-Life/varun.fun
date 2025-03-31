@@ -5,44 +5,51 @@ import { LinksSection } from "@/components/links-section"
 
 const workItems: Item[] = [
   {
-    title: "ENS labs",
-    role: "software engineer",
-    period: "feb 2025 - present",
+    title: "Spicenet",
+    role: "Senior infrastructure and protocol engineer",
+    period: "June 2024 - present",
     description:
-      "building a decentralized identity protocol as part of ENS labs",
-    href: "https://ens.domains",
+      "Building the first omni composability middleware for the global financial internet.",
+    href: "https://spicenet.io",
   },
   {
-    title: "leapflow",
-    role: "co-founder and cto",
-    period: "may 2024 - present",
+    title: "Proto geo",
+    role: "Devops Lead",
+    period: "December 2023 - May 2024",
     description:
-      "leading engineering to build ai agents for automating repetitive tasks in existing software",
-    href: "https://leapflow.tech",
+      "Leading storage and processing infrastructure for a large-scale web3 geospatial data platform",
+    href: "https://www.proto-geo.xyz",
   },
   {
-    title: "dimension",
+    title: "Jio",
     role: "full-stack engineer",
-    period: "nov 2023 - jan 2024",
+    period: "May 2023 - June 2023",
     description:
-      "contributed to a large-scale t3 stack app. worked on real-time presence and chat features",
-    href: "https://dimension.dev",
+      "Designed and implemented all aspects of a full-stack mobile application for the safety team at Jio",
+    href: "https://www.jio.com",
   },
+  {
+    title: "Capx",
+    role: "Intern/Blockchain engineer",
+    period: "March 2022 - May 2023",
+    description: "Wrote smart contracts for Capx mint protocol giving users a no code launchpad for their tokens",
+    href: "https://www.capx.ai",
+  }
 ]
 
 const projectItems = [
   {
-    title: "create-t3-app",
+    title: "Solana Indexer",
     role: "creator and maintainer",
     description:
-      "open-source project for initializing full-stack next.js apps. 24k+ stars, 200+ contributors",
-    href: "https://create.t3.gg",
+      "A highly efficient and scalable self-hostable and programmable indexer for Solana, Powered by Superteam",
+    href: "https://github.com/Envy-Life/Solana-Indexer",
   },
   {
-    title: "mini-git",
+    title: "Scalping Bot",
     role: "creator",
-    description: "simplified version of git from scratch",
-    href: "https://github.com/nexxeln/mini-git",
+    description: "A scalping bot for hyperliquid built using indicators from ta-lib",
+    href: "https://github.com/Envy-Life",
   },
 ]
 

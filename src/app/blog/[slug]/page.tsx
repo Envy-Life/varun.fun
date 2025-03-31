@@ -23,10 +23,10 @@ export async function generateMetadata({ params }: PageProps) {
       description: post.metadata.description,
       publishedTime,
       type: "article",
-      url: `https://www.nexxel.dev/blog/${post.slug}`,
+      url: `https://www.varun.fun/blog/${post.slug}`,
       images: [
         {
-          url: `https://www.nexxel.dev/og/blog?title=${post.metadata.title}`,
+          url: `https://www.varun.fun/og/blog?title=${post.metadata.title}`,
         },
       ],
     },
@@ -34,9 +34,9 @@ export async function generateMetadata({ params }: PageProps) {
       title: post.metadata.title,
       description: post.metadata.description,
       card: "summary_large_image",
-      creator: "@nexxeln",
+      creator: "@0x3nvy",
       images: [
-        `https://www.nexxel.dev/og/blog?title=${post.metadata.title}&top=${publishedTime}`,
+        `https://www.varun.fun/og/blog?title=${post.metadata.title}&top=${publishedTime}`,
       ],
     },
   }
@@ -62,13 +62,13 @@ export default async function Post({ params }: PageProps) {
             datePublished: post.metadata.date,
             dateModified: post.metadata.date,
             description: post.metadata.description,
-            image: `https://nexxel.dev/og/blog?title=${
+            image: `https://varun.fun/og/blog?title=${
               post.metadata.title
             }&top=${formatDate(post.metadata.date)}`,
-            url: `https://nexxel.dev/blog/${post.slug}`,
+            url: `https://varun.fun/blog/${post.slug}`,
             author: {
               "@type": "Person",
-              name: "Shoubhit Dash",
+              name: "Varun L",
             },
           }),
         }}
