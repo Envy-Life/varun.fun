@@ -26,7 +26,7 @@ export function LinksSection() {
         ))}
       </div>
       <p className="text-xs text-gray-500 mt-8 italic">
-        portfolio inspired by <a href="https://varun.fun" className="hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">varun.fun</a>
+        portfolio inspired by <a href="https://nexxel.dev" className="hover:text-accent transition-colors duration-200" target="_blank" rel="noopener noreferrer">varun.fun</a>
       </p>
     </section>
   )
