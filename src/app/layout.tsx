@@ -15,10 +15,10 @@ export const metadata: Metadata = {
     default: "Varun L",
     template: "%s | Varun L",
   },
-  description: "Developer, cardist and maker of things.",
+  description: "Developer",
   openGraph: {
     title: "Varun L",
-    description: "Developer, cardist and maker of things.",
+    description: "Developer",
     url: "https://www.varun.fun",
     siteName: "Varun L",
     locale: "en_US",
