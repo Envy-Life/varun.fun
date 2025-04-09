@@ -27,6 +27,9 @@ export function Navbar() {
         case "p":
           router.push("/projects")
           break
+        case "r":
+          window.open("/resume.pdf", "_blank")
+          break
       }
     }
 
@@ -55,6 +58,14 @@ export function Navbar() {
           className="hover:text-accent transition-colors duration-200"
         >
           [p] projects
+        </Link>
+        <Link
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-accent transition-colors duration-200"
+        >
+          [r] resume
         </Link>
       </div>
     </nav>
